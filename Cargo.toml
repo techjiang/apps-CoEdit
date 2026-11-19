@@ -1,0 +1,7 @@
+[workspace]
+members = [
+    "crates/coedit-core",
+    "crates/coedit-wasm",
+    "crates/coedit-server",
+]
+resolver = "2"
