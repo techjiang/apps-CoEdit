@@ -57,7 +57,9 @@ function renderHistory(): void {
 
 function log(message: string): void {
   const time = new Date().toLocaleTimeString('zh-CN', { hour12: false });
-  eventsList.insertAdjacentHTML('afterbegin', `<li><time>${time}</time>${escapeHtml(message)}</li>`);
+  eventsList.insertAdjacentHTML('afterbegin', `<li class="new"><time>${time}</time>${escapeHtml(message)}</li>`);
+  const first = eventsList.firstElementChild;
+  if (first) window.setTimeout(() => first.classList.remove('new'), 320);
   while (eventsList.children.length > 7) eventsList.lastElementChild?.remove();
 }
 
@@ -108,15 +110,15 @@ document.querySelector('#btn-bold')!.addEventListener('click', () => applyFormat
 document.querySelector('#btn-italic')!.addEventListener('click', () => applyFormat('italic'));
 document.querySelector('#btn-heading')!.addEventListener('click', () => applyFormat('heading'));
 
-document.querySelector('#btn-connect')!.addEventListener('click', async () => {
+async function connectSync(): Promise<void> {
   await sync.connect();
-  sync.setPresence(users);
+  sync.setPresence(users.filter((user) => user.online));
   sync.markSynced();
-  log('已连接 wss://sync.example.com，在线成员 3 人');
+  log('已连接 wss://sync.example.com，在线成员 2 人');
   renderSync();
-});
+}
 
-document.querySelector('#btn-offline')!.addEventListener('click', () => {
+function simulateOffline(): void {
   doc.insert(doc.length, doc.length ? ' [离线编辑]' : '离线编辑仍可继续');
   editor.textContent = doc.toString();
   lastText = doc.toString();
@@ -125,6 +127,18 @@ document.querySelector('#btn-offline')!.addEventListener('click', () => {
   renderEditor();
   renderHistory();
   renderSync();
+}
+
+for (const selector of ['#btn-connect', '#btn-hero-connect']) {
+  document.querySelector(selector)!.addEventListener('click', () => void connectSync());
+}
+for (const selector of ['#btn-offline', '#btn-hero-offline']) {
+  document.querySelector(selector)!.addEventListener('click', simulateOffline);
+}
+
+document.querySelector('#btn-clear-events')!.addEventListener('click', () => {
+  eventsList.innerHTML = '';
+  log('同步事件已清空');
 });
 
 historyList.addEventListener('click', (event) => {

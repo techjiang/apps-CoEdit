@@ -10,10 +10,10 @@
     <main class="app">
       <header class="topbar">
         <div class="brand">
-          <img class="logo" src="./logos/v5.svg" alt="CoEdit Logo" />
+          <img class="logo" src="./logos/v6.svg" alt="CoEdit Logo" />
           <div>
             <h1>CoEdit</h1>
-            <p>本地优先协作编辑引擎 · v0.2.0</p>
+            <p>本地优先协作编辑引擎 · v0.3.0</p>
           </div>
         </div>
         <div class="status-row">
@@ -24,10 +24,14 @@
       </header>
 
       <section class="hero">
-        <div>
+        <div class="hero-copy">
           <span class="eyebrow">LOCAL-FIRST · CRDT · E2EE</span>
           <h2>本地协作，随时同步。</h2>
           <p>断开网络继续写，恢复连接后按操作增量合并；每一次编辑都可回溯。</p>
+          <div class="hero-actions">
+            <button id="btn-hero-connect" type="button" class="primary">连接同步</button>
+            <button id="btn-hero-offline" type="button">模拟离线编辑</button>
+          </div>
         </div>
         <div class="metrics">
           <div><strong id="metric-version">0</strong><span>文档版本</span></div>
@@ -39,17 +43,17 @@
       <section class="brand-iterations">
         <div class="section-head">
           <div>
-            <span class="eyebrow">BRAND ITERATION · 5 ROUNDS</span>
-            <h2>Logo 迭代展示</h2>
+            <span class="eyebrow">BRAND ITERATION · 5 STEPS</span>
+            <h2>第二轮 Logo 精炼</h2>
           </div>
-          <p>透明 SVG，可直接嵌入任意背景</p>
+          <p>透明 SVG · 深色棋盘格展示透明区域</p>
         </div>
         <div class="logo-grid">
-          <article class="logo-card"><div class="logo-stage"><img src="./logos/v1.svg" alt="CoEdit Logo v1" /></div><h3>v1 · 链接起点</h3><p>双节点链接，表达协作起点</p></article>
-          <article class="logo-card"><div class="logo-stage"><img src="./logos/v2.svg" alt="CoEdit Logo v2" /></div><h3>v2 · 编辑光标</h3><p>引入光标笔锋，强调实时编辑</p></article>
-          <article class="logo-card"><div class="logo-stage"><img src="./logos/v3.svg" alt="CoEdit Logo v3" /></div><h3>v3 · 融合节点</h3><p>节点合并为 C 形，品牌识别更集中</p></article>
-          <article class="logo-card"><div class="logo-stage"><img src="./logos/v4.svg" alt="CoEdit Logo v4" /></div><h3>v4 · 双链文页</h3><p>文档与双人协作叠合，层次更清晰</p></article>
-          <article class="logo-card final"><div class="logo-stage"><img src="./logos/v5.svg" alt="CoEdit Logo final" /></div><h3>v5 · 最终标志</h3><p>C 形闭环 + 协同光标，简洁且可缩放</p><span>FINAL</span></article>
+          <article class="logo-card"><div class="logo-stage"><img src="./logos/v6.svg" alt="CoEdit Logo v6" /></div><h3>第 1 次 · 几何收敛</h3><p>保留 C 形闭环，线条更均衡</p></article>
+          <article class="logo-card"><div class="logo-stage"><img src="./logos/v7.svg" alt="CoEdit Logo v7" /></div><h3>第 2 次 · 双光标</h3><p>用两点强调多人实时在场</p></article>
+          <article class="logo-card"><div class="logo-stage"><img src="./logos/v8.svg" alt="CoEdit Logo v8" /></div><h3>第 3 次 · 网格刻度</h3><p>加入编辑网格，突出结构化文档</p></article>
+          <article class="logo-card"><div class="logo-stage"><img src="./logos/v9.svg" alt="CoEdit Logo v9" /></div><h3>第 4 次 · 加密弧线</h3><p>双层弧线暗示端到端加密通道</p></article>
+          <article class="logo-card final"><div class="logo-stage"><img src="./logos/v10.svg" alt="CoEdit Logo final" /></div><h3>第 5 次 · 最终标志</h3><p>闭环、双光标、刻度三者合一</p><span>FINAL</span></article>
         </div>
       </section>
 
@@ -74,7 +78,7 @@
         <aside class="panel side-panel">
           <div class="panel-head"><h3>版本历史</h3><span class="hint">点击恢复</span></div>
           <ol id="history" class="history"></ol>
-          <div class="panel-head second"><h3>同步事件</h3></div>
+          <div class="panel-head second"><h3>同步事件</h3><button id="btn-clear-events" type="button" class="ghost">清空</button></div>
           <ul id="events" class="events"></ul>
         </aside>
       </section>

@@ -7,8 +7,9 @@ CoEdit 是一个可嵌入的 CRDT 协作引擎：本地优先、离线可用，�
 ## 品牌
 
 - 项目口号：**本地协作，随时同步。**
-- 最终 Logo：`assets/brand/coedit-logo-v5.svg`（透明背景）
-- 5 轮 Logo 迭代：`assets/brand/coedit-logo-v1.svg` ~ `coedit-logo-v5.svg`
+- 当前 Logo：`assets/brand/coedit-logo-v10.svg`（透明背景）
+- 第一轮 Logo 迭代：`assets/brand/coedit-logo-v1.svg` ~ `coedit-logo-v5.svg`
+- 第二轮 Logo 迭代：`assets/brand/coedit-logo-v6.svg` ~ `coedit-logo-v10.svg`
 
 ## 核心能力
 
