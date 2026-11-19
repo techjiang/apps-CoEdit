@@ -1,0 +1,92 @@
+:root {
+  color-scheme: dark;
+  --bg: #07111f;
+  --card: #0e1d31;
+  --card-2: #13253d;
+  --line: #25405f;
+  --text: #e8f1ff;
+  --muted: #91a8c5;
+  --accent: #4dd4ac;
+  --accent-2: #6aa8ff;
+  --warn: #ffb86b;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: Inter, "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+  color: var(--text);
+  background:
+    radial-gradient(circle at 18% 12%, rgba(77, 212, 172, .16), transparent 28%),
+    radial-gradient(circle at 84% 4%, rgba(106, 168, 255, .18), transparent 26%),
+    var(--bg);
+}
+.app { max-width: 1240px; margin: 0 auto; padding: 32px 28px 44px; }
+.topbar, .hero, .workspace { margin-bottom: 22px; }
+.topbar, .brand, .status-row, .panel-head, .toolbar, .presence { display: flex; align-items: center; }
+.topbar { justify-content: space-between; }
+.brand { gap: 13px; }
+.logo {
+  width: 48px; height: 48px; display: grid; place-items: center;
+  border-radius: 14px; font-weight: 800; letter-spacing: -.5px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: #051321;
+}
+.brand h1 { margin: 0; font-size: 23px; }
+.brand p, .hint { margin: 3px 0 0; color: var(--muted); font-size: 12px; }
+.status-row { gap: 8px; }
+.pill {
+  padding: 7px 11px; border: 1px solid var(--line); border-radius: 999px;
+  background: rgba(19, 37, 61, .75); color: var(--muted); font-size: 12px;
+}
+.pill-warn { color: var(--warn); border-color: rgba(255, 184, 107, .5); }
+.pill-online { color: var(--accent); border-color: rgba(77, 212, 172, .55); }
+
+.hero {
+  display: flex; justify-content: space-between; gap: 30px; align-items: center;
+  padding: 30px 34px; border: 1px solid var(--line); border-radius: 22px;
+  background: linear-gradient(110deg, rgba(14,29,49,.96), rgba(15,39,61,.86));
+}
+.eyebrow { color: var(--accent); font-size: 11px; letter-spacing: 2.4px; font-weight: 700; }
+.hero h2 { margin: 12px 0 8px; font-size: 31px; letter-spacing: -.8px; }
+.hero p { margin: 0; color: var(--muted); line-height: 1.7; }
+.metrics { display: flex; gap: 12px; }
+.metrics div {
+  min-width: 104px; padding: 16px; text-align: center;
+  border-radius: 14px; background: rgba(7,17,31,.6); border: 1px solid var(--line);
+}
+.metrics strong { display: block; font-size: 25px; color: var(--accent); }
+.metrics span { font-size: 11px; color: var(--muted); }
+
+.workspace { display: grid; grid-template-columns: minmax(0, 1.75fr) minmax(290px, .75fr); gap: 18px; }
+.panel { border: 1px solid var(--line); border-radius: 18px; background: rgba(14,29,49,.92); overflow: hidden; }
+.panel-head { justify-content: space-between; padding: 15px 18px; border-bottom: 1px solid var(--line); }
+.panel-head.second { border-top: 1px solid var(--line); margin-top: 12px; }
+.panel-head h3 { margin: 0; font-size: 14px; }
+.presence { gap: 6px; }
+.avatar {
+  width: 26px; height: 26px; display: grid; place-items: center; border-radius: 50%;
+  color: #07111f; font-size: 11px; font-weight: 800;
+}
+.toolbar { gap: 8px; padding: 12px 16px; background: rgba(7,17,31,.35); border-bottom: 1px solid var(--line); }
+button {
+  border: 1px solid var(--line); border-radius: 9px; padding: 8px 11px;
+  color: var(--text); background: var(--card-2); cursor: pointer; font: inherit; font-size: 12px;
+}
+button:hover { border-color: var(--accent-2); }
+button.primary { color: #04152a; background: var(--accent); border-color: var(--accent); font-weight: 700; }
+.divider { width: 1px; height: 22px; background: var(--line); margin: 0 4px; }
+.editor {
+  min-height: 280px; padding: 26px 30px; outline: none; font-size: 17px; line-height: 1.85;
+  white-space: pre-wrap; caret-color: var(--accent);
+}
+.editor:empty::before { content: attr(data-placeholder); color: #607897; }
+.marks { padding: 0 18px 16px; color: var(--muted); font-size: 12px; }
+.mark-chip { display: inline-block; margin: 5px 6px 0 0; padding: 4px 8px; border-radius: 7px; background: var(--card-2); }
+.history, .events { list-style: none; margin: 0; padding: 10px 12px; max-height: 246px; overflow: auto; }
+.history li { margin-bottom: 5px; }
+.history button { width: 100%; text-align: left; display: flex; justify-content: space-between; }
+.history button.current { border-color: var(--accent); color: var(--accent); }
+.events { max-height: 210px; }
+.events li { padding: 7px 6px; color: var(--muted); border-bottom: 1px dashed rgba(37,64,95,.7); font-size: 12px; }
+.events time { color: #58708f; margin-right: 7px; }

@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CoEdit · 本地优先协作引擎演示</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="app">
+      <header class="topbar">
+        <div class="brand">
+          <span class="logo">CE</span>
+          <div>
+            <h1>CoEdit</h1>
+            <p>本地优先协作编辑引擎 · v0.2.0</p>
+          </div>
+        </div>
+        <div class="status-row">
+          <span id="sync-state" class="pill pill-warn">离线</span>
+          <span id="pending" class="pill">0 项待同步</span>
+          <span id="version" class="pill">v0</span>
+        </div>
+      </header>
+
+      <section class="hero">
+        <div>
+          <span class="eyebrow">LOCAL-FIRST · CRDT · E2EE</span>
+          <h2>同一个世界，同一个互联网</h2>
+          <p>断开网络继续写，恢复连接后按操作增量合并；每一次编辑都可回溯。</p>
+        </div>
+        <div class="metrics">
+          <div><strong id="metric-version">0</strong><span>文档版本</span></div>
+          <div><strong id="metric-history">1</strong><span>历史快照</span></div>
+          <div><strong id="metric-pending">0</strong><span>待同步操作</span></div>
+        </div>
+      </section>
+
+      <section class="workspace">
+        <article class="panel editor-panel">
+          <div class="panel-head">
+            <h3>协作文档 / roadmap.md</h3>
+            <div class="presence" id="presence"></div>
+          </div>
+          <div class="toolbar">
+            <button id="btn-bold" type="button">B 加粗</button>
+            <button id="btn-italic" type="button">I 斜体</button>
+            <button id="btn-heading" type="button">H 标题</button>
+            <span class="divider"></span>
+            <button id="btn-connect" type="button" class="primary">连接同步</button>
+            <button id="btn-offline" type="button">模拟离线编辑</button>
+          </div>
+          <div id="editor" class="editor" contenteditable="true" spellcheck="false"></div>
+          <div class="marks" id="marks"></div>
+        </article>
+
+        <aside class="panel side-panel">
+          <div class="panel-head"><h3>版本历史</h3><span class="hint">点击恢复</span></div>
+          <ol id="history" class="history"></ol>
+          <div class="panel-head second"><h3>同步事件</h3></div>
+          <ul id="events" class="events"></ul>
+        </aside>
+      </section>
+    </main>
+    <script type="module" src="./main.ts"></script>
+  </body>
+</html>

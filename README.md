@@ -20,7 +20,7 @@ CoEdit 是一个可嵌入的 CRDT 协作引擎：本地优先、离线可用，�
 - `crates/coedit-server`：可选同步服务器
 - `packages/coedit`：TypeScript SDK
 - `packages/coedit-react`：React 绑定
-- `examples`：示例应用
+- `examples`：示例应用（含 `collab-demo` 可视化演示页）
 
 ## 快速开始
 
@@ -45,4 +45,10 @@ Apache 2.0 © 2026 科技酱
 
 ## 实现状态
 
-当前提交完成 M1 的可运行骨架：RGA 文本 CRDT、富文本格式模型、Map/List/Tree/Counter CRDT、文档操作与增量同步协议、TypeScript SDK、React 绑定、示例工程与 CI 配置。后续里程碑按 Issue 文档继续推进。
+当前提交在 M1 骨架之上完善了 TypeScript 文档模型：真实增量操作日志、富文本格式标记、历史快照与恢复、跨文档变更重放、同步状态与待同步计数，并新增可在浏览器打开的协作演示页 `examples/collab-demo`。
+
+```bash
+npx vite --host 127.0.0.1 --port 4173 --config examples/collab-demo/vite.config.ts examples/collab-demo
+```
+
+打开 `http://127.0.0.1:4173/` 可查看离线编辑、在线状态、格式标记与版本回溯。Rust 核心仍保留 M1 实现；后续继续推进 WebSocket 同步与端到端加密。
