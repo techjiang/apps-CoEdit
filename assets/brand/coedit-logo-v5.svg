@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128" role="img" aria-label="CoEdit logo">
+  <defs>
+    <linearGradient id="ce" x1="12" y1="8" x2="116" y2="120" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#4dd4ac"/>
+      <stop offset="1" stop-color="#6aa8ff"/>
+    </linearGradient>
+    <filter id="soft" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="1.2"/>
+    </filter>
+  </defs>
+  <path d="M94 30a42 42 0 1 0 0 68" fill="none" stroke="url(#ce)" stroke-width="16" stroke-linecap="round"/>
+  <path d="M92 26 112 55 88 59 80 84z" fill="#e8f1ff"/>
+  <path d="M94 45 104 56 90 58z" fill="url(#ce)" opacity=".65"/>
+  <circle cx="94" cy="30" r="5" fill="#4dd4ac" filter="url(#soft)" opacity=".7"/>
+</svg>

@@ -1,8 +1,14 @@
 # CoEdit · 本地优先协作编辑引擎
 
-给你的应用加上多人协作 — 离线优先、端到端加密、冲突自动合并。
+本地协作，随时同步。 — 离线优先、端到端加密、冲突自动合并。
 
 CoEdit 是一个可嵌入的 CRDT 协作引擎：本地优先、离线可用，联网后自动合并，所有副本最终一致。
+
+## 品牌
+
+- 项目口号：**本地协作，随时同步。**
+- 最终 Logo：`assets/brand/coedit-logo-v5.svg`（透明背景）
+- 5 轮 Logo 迭代：`assets/brand/coedit-logo-v1.svg` ~ `coedit-logo-v5.svg`
 
 ## 核心能力
 
