@@ -39,6 +39,22 @@ describe('Document', () => {
     expect(target.version).toBe(source.version);
   });
 
+  it('returns deep copies of the change log', () => {
+    const doc = new Document();
+    doc.insert(0, 'safe');
+    const copy = doc.changesSince(0);
+    (copy[0] as { text: string }).text = 'mutated';
+    expect(doc.toString()).toBe('safe');
+    expect(doc.changesSince(0)[0]).toMatchObject({ text: 'safe' });
+  });
+
+  it('rebases remote changes without duplicating local edits', () => {
+    const doc = new Document();
+    doc.insert(0, 'local');
+    const remote = [{ type: 'insert' as const, index: 0, text: 'local' }, { type: 'insert' as const, index: doc.length, text: ' peer' }];
+    expect(doc.rebase(remote)).toHaveLength(1);
+  });
+
   it('rejects invalid ranges', () => {
     const doc = new Document();
     expect(() => doc.insert(2, 'x')).toThrow(RangeError);

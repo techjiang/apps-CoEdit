@@ -24,6 +24,7 @@ export class SyncManager {
   private users: RemoteUser[] = [];
   private status: SyncStatus = { state: 'offline', pendingChanges: 0, ackedVersion: 0 };
   private ackedVersion = 0;
+  private dedupe = new Set<string>();
 
   constructor(public readonly doc: Document, public readonly options: SyncOptions = {}) {
     doc.on('change', () => {
@@ -78,6 +79,11 @@ export class SyncManager {
     this.updateStatus({ state: 'offline', transport: undefined, server: undefined });
   }
 
+  async reconnect(): Promise<void> {
+    await this.connect();
+    if (this.status.state === 'online') this.markSynced();
+  }
+
   pendingChanges(): DocChange[] {
     return this.doc.changesSince(this.ackedVersion);
   }
@@ -90,11 +96,16 @@ export class SyncManager {
 
   receive(changes: DocChange[]): void {
     if (!changes.length) return;
-    this.doc.applyChanges(changes, Math.max(this.doc.version, this.ackedVersion) + changes.length);
-    this.ackedVersion = this.doc.version;
-    this.updateStatus({ ackedVersion: this.ackedVersion, lastSyncedAt: Date.now() });
-    this.refreshPending();
-    this.changeListeners.forEach((listener) => listener(structuredClone(changes)));
+    const accepted = changes.filter((change) => {
+      const key = changeKey(change);
+      if (this.dedupe.has(key)) return false;
+      this.dedupe.add(key);
+      return true;
+    });
+    if (!accepted.length) return;
+    this.doc.applyChanges(this.doc.rebase(accepted));
+    this.markSynced();
+    this.changeListeners.forEach((listener) => listener(structuredClone(accepted)));
   }
 
   private emitPresence(): void {
@@ -102,7 +113,7 @@ export class SyncManager {
   }
 
   private refreshPending(): void {
-    const pendingChanges = this.pendingChanges().length;
+    const pendingChanges = new Set(this.pendingChanges().map(changeKey)).size;
     if (pendingChanges !== this.status.pendingChanges) this.updateStatus({ pendingChanges });
   }
 
@@ -112,4 +123,8 @@ export class SyncManager {
     this.status = next;
     this.statusListeners.forEach((listener) => listener({ ...this.status }));
   }
+}
+
+function changeKey(change: DocChange): string {
+  return JSON.stringify(change);
 }

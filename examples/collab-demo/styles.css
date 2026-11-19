@@ -80,6 +80,7 @@ button {
 button:hover { border-color: var(--accent-2); transform: translateY(-1px); }
 button.primary { color: #04152a; background: var(--accent); border-color: var(--accent); font-weight: 700; }
 button.ghost { padding: 5px 9px; color: var(--muted); background: transparent; }
+button.subtle { border-color: transparent; background: transparent; }
 .divider { width: 1px; height: 22px; background: var(--line); margin: 0 4px; }
 .editor {
   min-height: 300px; padding: 26px 30px; outline: none; font-size: 17px; line-height: 1.85;

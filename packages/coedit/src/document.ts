@@ -138,26 +138,36 @@ export class Document {
   }
 
   changesSince(version: number): DocChange[] {
-    return this.stored.slice(version + 1).flat();
+    return this.stored
+      .slice(version + 1)
+      .flat()
+      .map((change) => structuredClone(change));
   }
 
-  applyChanges(changes: DocChange[], targetVersion = this.version + changes.length): void {
+  applyChanges(changes: DocChange[], targetVersion?: number): void {
     if (!changes.length) return;
-    const firstVersion = this.version + 1;
-    const committed: DocChange[] = [];
-    for (const change of changes) {
-      const bucket = { ...structuredClone(change) };
-      committed.push(bucket);
-      this.applyLocalChange(bucket);
-    }
-    const bucketVersion = Math.max(firstVersion, targetVersion);
+    const bucketVersion = targetVersion ?? this.version + 1;
+    if (bucketVersion <= this.version) return;
+    const committed = changes.map((change) => structuredClone(change));
+    for (const change of committed) this.applyLocalChange(change);
     this.stored[bucketVersion] = committed;
-    for (let version = firstVersion; version < bucketVersion; version += 1) {
+    for (let version = this.version + 1; version < bucketVersion; version += 1) {
       this.stored[version] = [];
     }
     this.entries[bucketVersion] = this.snapshot(bucketVersion);
     this.persist();
     this.emit(committed);
+  }
+
+  rebase(changes: DocChange[]): DocChange[] {
+    const localKeys = new Set(this.changeLog.map(changeKey));
+    const seen = new Set<string>();
+    return changes.filter((change) => {
+      const key = changeKey(change);
+      if (localKeys.has(key) || seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    }).map((change) => structuredClone(change));
   }
 
   on(event: 'change', listener: Listener<ChangeEvent>): () => void {
@@ -279,6 +289,10 @@ function retreat(position: number, change: Extract<DocChange, { type: 'delete' }
   if (position <= change.index) return position;
   if (position >= change.index + change.len) return position - change.len;
   return change.index;
+}
+
+function changeKey(change: DocChange): string {
+  return JSON.stringify(change);
 }
 
 export const NO_ATTRS = EMPTY_ATTRS;

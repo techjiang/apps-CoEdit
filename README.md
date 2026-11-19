@@ -10,6 +10,7 @@ CoEdit 是一个可嵌入的 CRDT 协作引擎：本地优先、离线可用，�
 - 当前 Logo：`assets/brand/coedit-logo-v10.svg`（透明背景）
 - 第一轮 Logo 迭代：`assets/brand/coedit-logo-v1.svg` ~ `coedit-logo-v5.svg`
 - 第二轮 Logo 迭代：`assets/brand/coedit-logo-v6.svg` ~ `coedit-logo-v10.svg`
+- 当前演示页 Logo 使用 `examples/collab-demo/logos/v10.svg`
 
 ## 核心能力
 
@@ -58,4 +59,4 @@ Apache 2.0 © 2026 科技酱
 npx vite --host 127.0.0.1 --port 4173 --config examples/collab-demo/vite.config.ts examples/collab-demo
 ```
 
-打开 `http://127.0.0.1:4173/` 可查看离线编辑、在线状态、格式标记与版本回溯。第三轮迭代补齐 MemoryStorage 持久化、离线操作队列、自动/手动同步确认、远端变更接收与完整变更日志重放；SDK 现有 11 项单测。Rust 核心仍保留 M1 实现；后续继续推进 WebSocket 同步与端到端加密。
+打开 `http://127.0.0.1:4173/` 可查看离线编辑、在线状态、格式标记与版本回溯。第三轮迭代补齐 MemoryStorage 持久化、离线操作队列、自动/手动同步确认、远端变更接收与完整变更日志重放。第四轮迭代加强同步韧性：`changesSince` 返回深拷贝、`receive` 幂等去重、`Document.rebase` 过滤本地重复操作、`SyncManager.reconnect` 一键重连清队，演示页提供可复位状态；SDK 现有 15 项单测。Rust 核心仍保留 M1 实现；后续继续推进 WebSocket 同步与端到端加密。

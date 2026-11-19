@@ -56,6 +56,22 @@ describe('SyncManager', () => {
     expect(sync.getStatus().pendingChanges).toBe(0);
   });
 
+  it('reconnects and clears pending changes in one step', async () => {
+    const sync = new SyncManager(new Document(), { server: 'wss://sync.example.com', autoSync: false });
+    sync.doc.insert(0, 'queued');
+    await sync.reconnect();
+    expect(sync.getStatus()).toMatchObject({ state: 'online', pendingChanges: 0, ackedVersion: 1 });
+  });
+
+  it('dedupes repeated remote changes', () => {
+    const sync = new SyncManager(new Document(), { autoSync: false });
+    const remote = [{ type: 'insert' as const, index: 0, text: 'once' }];
+    sync.receive(remote);
+    sync.receive(remote);
+    expect(sync.doc.toString()).toBe('once');
+    expect(sync.getStatus().ackedVersion).toBe(1);
+  });
+
   it('restores a document from memory storage', () => {
     const storage = new MemoryStorage();
     const first = new Document({ type: 'text', documentId: 'note', storage });

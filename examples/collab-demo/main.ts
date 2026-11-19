@@ -18,6 +18,7 @@ const users: RemoteUser[] = [
 
 let applyingRemote = false;
 let lastText = '';
+let dedupedCount = 0;
 
 function escapeHtml(value: string): string {
   return value.replace(/[&<>]/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' })[char]!);
@@ -74,6 +75,7 @@ function renderSync(): void {
   document.querySelector('#metric-version')!.textContent = String(doc.version);
   document.querySelector('#metric-history')!.textContent = String(doc.history().entries().length);
   document.querySelector('#metric-pending')!.textContent = String(status.pendingChanges);
+  document.querySelector('#dedupe-state')!.textContent = `去重 ${dedupedCount} 项`;
   const storageState = document.querySelector<HTMLSpanElement>('#storage-state')!;
   const saved = storage.load(doc.documentId ?? 'roadmap-demo');
   storageState.textContent = saved ? `已持久化 · v${saved.version}` : '未持久化';
@@ -123,12 +125,36 @@ async function connectSync(): Promise<void> {
   renderSync();
 }
 
+async function reconnectSync(): Promise<void> {
+  await sync.reconnect();
+  sync.setPresence(users.filter((user) => user.online));
+  log('重连完成，离线队列已一次性确认');
+  renderSync();
+}
+
 function simulateRemoteChange(): void {
-  const text = doc.length ? ' [远端已合并]' : '远端变更已合并';
-  sync.receive([{ type: 'insert', index: doc.length, text }]);
+  const change = { type: 'insert' as const, index: doc.length, text: doc.length ? ' [远端已合并]' : '远端变更已合并' };
+  sync.receive([change]);
+  const before = doc.length;
+  sync.receive([change]);
+  if (doc.length === before) dedupedCount += 1;
   editor.textContent = doc.toString();
   lastText = doc.toString();
-  log('收到远端增量变更，已按顺序合并');
+  log('远端增量已合并，重复消息已幂等丢弃');
+  renderEditor();
+  renderHistory();
+  renderSync();
+}
+
+function resetDemo(): void {
+  doc.restore(0);
+  sync.disconnect();
+  sync.markSynced(0);
+  dedupedCount = 0;
+  eventsList.innerHTML = '';
+  editor.textContent = doc.toString();
+  lastText = doc.toString();
+  log('演示状态已重置');
   renderEditor();
   renderHistory();
   renderSync();
@@ -154,6 +180,10 @@ for (const selector of ['#btn-offline', '#btn-hero-offline']) {
 for (const selector of ['#btn-remote', '#btn-hero-remote']) {
   document.querySelector(selector)!.addEventListener('click', simulateRemoteChange);
 }
+for (const selector of ['#btn-reset', '#btn-hero-reset']) {
+  document.querySelector(selector)!.addEventListener('click', resetDemo);
+}
+document.querySelector('#btn-sync')?.addEventListener('click', () => void reconnectSync());
 
 document.querySelector('#btn-clear-events')!.addEventListener('click', () => {
   eventsList.innerHTML = '';
@@ -181,7 +211,7 @@ doc.on('change', () => {
 sync.on('status', renderSync);
 sync.on('presence', renderSync);
 
-doc.insert(0, '# CoEdit 开发路线图\n\nM1 CRDT 核心引擎已完成：文本操作、富文本标记、增量同步与历史快照。\nM2 正在推进：WebSocket 协议、端到端加密与本地持久化。');
+doc.insert(0, '# CoEdit 开发路线图\n\nM1 CRDT 核心引擎已完成：文本操作、富文本标记、增量同步与历史快照。\nM2 正在推进：WebSocket 协议、端到端加密与浏览器持久化。');
 doc.format(0, 13, { heading: 1 });
 doc.format(22, 31, { bold: true });
 editor.textContent = doc.toString();
