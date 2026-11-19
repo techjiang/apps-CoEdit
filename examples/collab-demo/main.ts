@@ -1,8 +1,9 @@
-import { Document, SyncManager, assignColor } from 'coedit';
+import { Document, MemoryStorage, SyncManager, assignColor } from 'coedit';
 import type { RemoteUser } from 'coedit';
 
-const doc = new Document({ type: 'richtext', encrypted: true, documentId: 'roadmap-demo' });
-const sync = new SyncManager(doc, { server: 'wss://sync.example.com', room: 'demo' });
+const storage = new MemoryStorage();
+const doc = new Document({ type: 'richtext', encrypted: true, documentId: 'roadmap-demo', storage });
+const sync = new SyncManager(doc, { server: 'wss://sync.example.com', room: 'demo', autoSync: false });
 const editor = document.querySelector<HTMLDivElement>('#editor')!;
 const historyList = document.querySelector<HTMLOListElement>('#history')!;
 const eventsList = document.querySelector<HTMLUListElement>('#events')!;
@@ -73,6 +74,10 @@ function renderSync(): void {
   document.querySelector('#metric-version')!.textContent = String(doc.version);
   document.querySelector('#metric-history')!.textContent = String(doc.history().entries().length);
   document.querySelector('#metric-pending')!.textContent = String(status.pendingChanges);
+  const storageState = document.querySelector<HTMLSpanElement>('#storage-state')!;
+  const saved = storage.load(doc.documentId ?? 'roadmap-demo');
+  storageState.textContent = saved ? `已持久化 · v${saved.version}` : '未持久化';
+  storageState.className = `pill ${saved ? 'pill-online' : ''}`;
   presenceBox.innerHTML = users
     .map((user) => `<span class="avatar" title="${user.name} · ${user.online ? '在线' : '离线'}" style="background:${user.color}">${user.name[0]}</span>`)
     .join('');
@@ -118,6 +123,17 @@ async function connectSync(): Promise<void> {
   renderSync();
 }
 
+function simulateRemoteChange(): void {
+  const text = doc.length ? ' [远端已合并]' : '远端变更已合并';
+  sync.receive([{ type: 'insert', index: doc.length, text }]);
+  editor.textContent = doc.toString();
+  lastText = doc.toString();
+  log('收到远端增量变更，已按顺序合并');
+  renderEditor();
+  renderHistory();
+  renderSync();
+}
+
 function simulateOffline(): void {
   doc.insert(doc.length, doc.length ? ' [离线编辑]' : '离线编辑仍可继续');
   editor.textContent = doc.toString();
@@ -134,6 +150,9 @@ for (const selector of ['#btn-connect', '#btn-hero-connect']) {
 }
 for (const selector of ['#btn-offline', '#btn-hero-offline']) {
   document.querySelector(selector)!.addEventListener('click', simulateOffline);
+}
+for (const selector of ['#btn-remote', '#btn-hero-remote']) {
+  document.querySelector(selector)!.addEventListener('click', simulateRemoteChange);
 }
 
 document.querySelector('#btn-clear-events')!.addEventListener('click', () => {

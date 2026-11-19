@@ -7,6 +7,7 @@ import type {
   HistoryEntry,
   Listener,
 } from './types';
+import type { DocumentStorage, PersistedDocument } from './storage';
 
 interface StoredMark {
   id: string;
@@ -26,11 +27,13 @@ export class Document {
   private stored: DocChange[][] = [[]];
   private entries: HistoryEntry[] = [];
   private readonly listeners = new Set<Listener<ChangeEvent>>();
+  private storage?: { adapter: DocumentStorage; documentId: string };
   private markSeq = 0;
 
   constructor(options: DocumentOptions = {}) {
     this.options = { type: 'text', encrypted: false, ...options };
     this.entries.push(this.snapshot(0));
+    if (options.storage && options.documentId) this.attachStorage(options.storage, options.documentId);
   }
 
   get length(): number {
@@ -39,6 +42,38 @@ export class Document {
 
   get version(): number {
     return this.stored.length - 1;
+  }
+
+  get documentId(): string | undefined {
+    return this.options.documentId;
+  }
+
+  get changeLog(): DocChange[] {
+    return this.stored.slice(1).flat().map((change) => structuredClone(change));
+  }
+
+  attachStorage(storage: DocumentStorage, documentId = this.options.documentId ?? 'untitled'): void {
+    this.storage = { adapter: storage, documentId };
+    this.options.documentId = documentId;
+    const saved = storage.load(documentId);
+    if (!saved?.changes.length) return;
+    this.text = '';
+    this.marks = [];
+    this.stored = [[]];
+    this.entries = [this.snapshot(0)];
+    this.applyChanges(saved.changes as DocChange[], saved.version);
+  }
+
+  persist(): PersistedDocument | undefined {
+    if (!this.storage) return undefined;
+    const snapshot: PersistedDocument = {
+      documentId: this.storage.documentId,
+      version: this.version,
+      content: this.text,
+      changes: this.changeLog,
+    };
+    this.storage.adapter.save(snapshot);
+    return snapshot;
   }
 
   toString(): string {
@@ -121,6 +156,7 @@ export class Document {
       this.stored[version] = [];
     }
     this.entries[bucketVersion] = this.snapshot(bucketVersion);
+    this.persist();
     this.emit(committed);
   }
 
@@ -183,6 +219,7 @@ export class Document {
     const version = this.version + 1;
     this.stored[version] = changes;
     this.entries[version] = this.snapshot(version);
+    this.persist();
     this.emit(changes);
   }
 

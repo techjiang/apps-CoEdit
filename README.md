@@ -58,4 +58,4 @@ Apache 2.0 © 2026 科技酱
 npx vite --host 127.0.0.1 --port 4173 --config examples/collab-demo/vite.config.ts examples/collab-demo
 ```
 
-打开 `http://127.0.0.1:4173/` 可查看离线编辑、在线状态、格式标记与版本回溯。Rust 核心仍保留 M1 实现；后续继续推进 WebSocket 同步与端到端加密。
+打开 `http://127.0.0.1:4173/` 可查看离线编辑、在线状态、格式标记与版本回溯。第三轮迭代补齐 MemoryStorage 持久化、离线操作队列、自动/手动同步确认、远端变更接收与完整变更日志重放；SDK 现有 11 项单测。Rust 核心仍保留 M1 实现；后续继续推进 WebSocket 同步与端到端加密。

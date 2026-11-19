@@ -1,9 +1,11 @@
+import type { DocumentStorage } from './storage';
 export type DocumentType = 'text' | 'richtext' | 'json';
 
 export interface DocumentOptions {
   type?: DocumentType;
   encrypted?: boolean;
   documentId?: string;
+  storage?: DocumentStorage;
 }
 
 export interface FormatAttributes {
