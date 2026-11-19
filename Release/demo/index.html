@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+    <title>CoEdit · 本地优先协作引擎演示</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="app">
+      <header class="topbar">
+        <div class="brand">
+          <img class="logo" src="./logos/v10.svg" alt="CoEdit Logo" />
+          <div>
+            <h1>CoEdit</h1>
+            <p>本地优先协作编辑引擎 · v1.0.0</p>
+          </div>
+        </div>
+        <div class="status-row">
+          <span id="sync-state" class="pill pill-warn">离线</span>
+          <span id="pending" class="pill">0 项待同步</span>
+          <span id="version" class="pill">v0</span>
+          <span id="storage-state" class="pill">未持久化</span>
+          <span id="dedupe-state" class="pill">去重 0 项</span>
+        </div>
+      </header>
+
+      <section class="hero">
+        <div class="hero-copy">
+          <span class="eyebrow">LOCAL-FIRST · CRDT · E2EE</span>
+          <h2>本地协作，随时同步。</h2>
+          <p>断开网络继续写，恢复连接后按操作增量合并；每一次编辑都可回溯。</p>
+          <div class="hero-actions">
+            <button id="btn-hero-connect" type="button" class="primary">连接同步</button>
+            <button id="btn-hero-offline" type="button">模拟离线编辑</button>
+            <button id="btn-hero-remote" type="button">模拟远端变更</button>
+            <button id="btn-hero-reset" type="button" class="ghost">重置演示</button>
+          </div>
+        </div>
+        <div class="metrics">
+          <div><strong id="metric-version">0</strong><span>文档版本</span></div>
+          <div><strong id="metric-history">1</strong><span>历史快照</span></div>
+          <div><strong id="metric-pending">0</strong><span>待同步操作</span></div>
+        </div>
+      </section>
+
+      <section class="brand-iterations">
+        <div class="section-head">
+          <div>
+            <span class="eyebrow">SYNC HARDENING · 5 STEPS</span>
+            <h2>第四轮 · 同步韧性迭代</h2>
+          </div>
+          <p>深拷贝 / 幂等接收 / 变更重基 / 一键重连 / 可重置演示</p>
+        </div>
+        <div class="feature-grid">
+          <article class="feature-card"><span class="step">01</span><h3>变更隔离</h3><p>changesSince 返回深拷贝，外部修改不再污染文档日志</p></article>
+          <article class="feature-card"><span class="step">02</span><h3>幂等接收</h3><p>receive 按变更指纹去重，重复消息不会叠加文本</p></article>
+          <article class="feature-card"><span class="step">03</span><h3>增量重基</h3><p>rebase 过滤本地已有操作，远端合并更干净</p></article>
+          <article class="feature-card"><span class="step">04</span><h3>一键重连</h3><p>reconnect 串联连接与同步确认，队列一次清零</p></article>
+          <article class="feature-card final"><span class="step">05</span><h3>状态可复位</h3><p>重置按钮清空事件与演示状态，适合反复验收</p><span>DONE</span></article>
+        </div>
+      </section>
+
+      <section class="workspace">
+        <article class="panel editor-panel">
+          <div class="panel-head">
+            <h3>协作文档 / roadmap.md</h3>
+            <div class="presence" id="presence"></div>
+          </div>
+          <div class="toolbar">
+            <button id="btn-bold" type="button">B 加粗</button>
+            <button id="btn-italic" type="button">I 斜体</button>
+            <button id="btn-heading" type="button">H 标题</button>
+            <span class="divider"></span>
+            <button id="btn-connect" type="button" class="primary">连接同步</button>
+            <button id="btn-offline" type="button">模拟离线编辑</button>
+            <button id="btn-remote" type="button">模拟远端变更</button>
+            <button id="btn-reset" type="button" class="ghost">重置</button>
+          </div>
+          <div id="editor" class="editor" contenteditable="true" spellcheck="false"></div>
+          <div class="marks" id="marks"></div>
+        </article>
+
+        <aside class="panel side-panel">
+          <div class="panel-head"><h3>版本历史</h3><span class="hint">点击恢复</span></div>
+          <ol id="history" class="history"></ol>
+          <div class="panel-head second"><h3>同步事件</h3><button id="btn-clear-events" type="button" class="ghost">清空</button></div>
+          <ul id="events" class="events"></ul>
+        </aside>
+      </section>
+    </main>
+    <script type="module" src="./main.ts"></script>
+  </body>
+</html>

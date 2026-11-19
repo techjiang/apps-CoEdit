@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128" role="img" aria-label="CoEdit logo v2">
+  <defs><linearGradient id="g2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4dd4ac"/><stop offset="1" stop-color="#6aa8ff"/></linearGradient></defs>
+  <path d="M27 36h48a17 17 0 0 1 0 34H52v22H27z" fill="url(#g2)" opacity=".9"/>
+  <path d="M67 26 102 63 79 67l-5 23z" fill="#e8f1ff"/>
+  <path d="M75 53h20" stroke="#4dd4ac" stroke-width="6" stroke-linecap="round"/>
+</svg>
